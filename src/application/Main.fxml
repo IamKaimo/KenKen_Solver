@@ -8,8 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
       <HBox layoutX="8.0" layoutY="9.0" prefHeight="177.0" prefWidth="583.0">
          <children>
@@ -17,7 +16,7 @@
                <children>
                   <AnchorPane prefHeight="177.0" prefWidth="280.0">
                      <children>
-                        <Button layoutX="189.0" layoutY="42.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="Generate" />
+                        <Button fx:id="gene_btn" layoutX="189.0" layoutY="42.0" mnemonicParsing="false" onAction="#generate" prefHeight="26.0" prefWidth="70.0" text="Generate" />
                         <TextField layoutX="55.0" layoutY="42.0" prefHeight="26.0" prefWidth="126.0" />
                         <Button layoutX="189.0" layoutY="104.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="Solve" />
                         <ComboBox layoutX="55.0" layoutY="104.0" prefHeight="26.0" prefWidth="126.0" />
