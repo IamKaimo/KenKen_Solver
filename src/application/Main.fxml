@@ -3,29 +3,40 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <HBox layoutX="8.0" layoutY="9.0" prefHeight="177.0" prefWidth="583.0">
+      <HBox minHeight="-Infinity" minWidth="-Infinity">
          <children>
-            <VBox prefHeight="178.0" prefWidth="280.0">
+            <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" HBox.hgrow="ALWAYS">
                <children>
-                  <AnchorPane prefHeight="177.0" prefWidth="280.0">
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="200.0" style="-fx-background-color: rgb(220,230,230);">
                      <children>
-                        <Button fx:id="gene_btn" layoutX="189.0" layoutY="42.0" mnemonicParsing="false" onAction="#generate" prefHeight="26.0" prefWidth="70.0" text="Generate" />
-                        <TextField layoutX="55.0" layoutY="42.0" prefHeight="26.0" prefWidth="126.0" />
-                        <Button layoutX="189.0" layoutY="104.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="Solve" />
-                        <ComboBox layoutX="55.0" layoutY="104.0" prefHeight="26.0" prefWidth="126.0" />
-                        <Label layoutX="13.0" layoutY="46.0" text="Size" />
-                        <Label layoutX="3.0" layoutY="109.0" text="Method" />
+                        <Text fill="#11b0cc" layoutX="16.0" layoutY="40.0" stroke="#bf3333" strokeType="OUTSIDE" strokeWidth="0.0" text="KenKen Solver" wrappingWidth="167.20000000000005">
+                           <font>
+                              <Font name="Book Antiqua" size="24.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Button fx:id="gene_btn" layoutX="16.0" layoutY="62.0" mnemonicParsing="false" onAction="#generate_btn" prefHeight="26.0" prefWidth="167.0" text="Generate" />
+                        <Button fx:id="solve_btn" layoutX="16.0" layoutY="171.0" mnemonicParsing="false" onAction="#draw_btn" prefHeight="26.0" prefWidth="167.0" text="Solve" />
+                        <ComboBox fx:id="size_cb" layoutX="92.0" layoutY="28.0" prefHeight="26.0" prefWidth="92.0" promptText="N x N" />
+                        <Label fx:id="size_txt" layoutX="16.0" layoutY="33.0" text="Size :" />
+                        <Label fx:id="algo_txt" layoutX="16.0" layoutY="142.0" text="Algorithm :" />
+                        <ComboBox fx:id="algo_cb" layoutX="92.0" layoutY="137.0" prefHeight="26.0" prefWidth="92.0" promptText="Choose " />
                      </children>
                   </AnchorPane>
                </children>
             </VBox>
+            <VBox fx:id="puzzle_box" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: rgb(220,220,220); -fx-border-color: gray;" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </children>

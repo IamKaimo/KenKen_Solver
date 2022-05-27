@@ -1,7 +1,5 @@
 package application;
 	
-import java.util.ArrayList;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -10,6 +8,7 @@ import javafx.scene.Scene;
 
 
 public class Main extends Application {
+	
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -22,8 +21,8 @@ public class Main extends Application {
 			//Image icon = new Image("icon.png");
 			//primaryStage.getIcons().add(icon);
 			primaryStage.setResizable(false);
-			primaryStage.setMinWidth(920);
-			primaryStage.setMinHeight(640);	
+			primaryStage.setMinWidth(800);
+			primaryStage.setMinHeight(600);	
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
