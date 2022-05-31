@@ -2,9 +2,6 @@ package application;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -12,13 +9,11 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.*;
 import java.util.Random;
 
 
@@ -53,6 +48,7 @@ public class Controller
 	
 	//////////////////////Algorithm Code//////////////////////
 	public ArrayList<Region> Puzzle = new ArrayList<>();
+	public ArrayList<Region> Solu = new ArrayList<>();
 	public int size = 3;
 	
 	public void generate() {
@@ -270,6 +266,29 @@ class Region
 		operator =0;
 		tot = 0;
 	}
+	public Region(int index,int val) {
+		blocks = new ArrayList<>();
+		blocks.add(index);
+		operator =0;
+		tot = val;
+	}
+	public Region(Region x) {
+		blocks = new ArrayList<>();
+		for(int i : x.blocks) {
+			blocks.add(i);
+		}
+		operator =x.operator;
+		tot = x.tot;
+		domains = new ArrayList<>();
+		if(x.domains!=null) {
+			for(ArrayList<Integer> i : x.domains) {
+				ArrayList<Integer> neo = new ArrayList<>(i);
+				domains.add(neo);
+			}
+		}
+		
+		
+	}
 	public Region(ArrayList<Integer> in) {
 		blocks = new ArrayList<>();
 		for(int i : in) {
@@ -279,41 +298,69 @@ class Region
 		tot = 0;
 	}
 	public void setOp(int op) {
-		operator = op%4;
-		//+ - * /
+		if(blocks.size()==2) {
+			if(op <= 5)operator = 3;
+			else operator = op%2;
+		}
+		else operator = op%2;
+	}
+	public String getOp() {
+		switch(operator) {
+		case 0:
+			return "+";
+		case 1:
+			return "*";
+		case 2:
+			return "-";
+		case 3:
+			return "/";
+		}
+		return null;
 	}
 	public void setVals(int puzzle[][]) {
-		vals = new ArrayList<>();
 		blocks.sort(null);
-		if(operator >1)tot = 1;
+		if(operator ==1)tot = 1;
+		if(getOp()=="/") {
+			int i = blocks.get(0);
+			int row = (i-1)/puzzle[0].length;
+			int column = (i-1)%puzzle[0].length;
+			int num= puzzle[row][column];
+			i = blocks.get(1);
+			row = (i-1)/puzzle[0].length;
+			column = (i-1)%puzzle[0].length;
+			int num2= puzzle[row][column];
+			if((double)num/num2 - num/num2 > 0) {
+				operator = 2;
+			}
+			else {
+				tot = num/num2;
+				return;
+			}
+		}
+		
 		for(int i:blocks) {
 			int row = (i-1)/puzzle[0].length;
 			int column = (i-1)%puzzle[0].length;
 			int num= puzzle[row][column];
-			vals.add(num);
-			switch(operator) {
-			case 0:
+			switch(getOp()) {
+			case "+":
 				tot+=num;
 				break;
-			case 1:
-				tot-=num;
-				break;
-			case 2:
+			case "*":
 				tot*=num;
 				break;
-			case 3:
-				tot/=num;
+			case "-":
+				if(tot==0)tot=num;
+				else tot-=num;
 				break;
 			}
 		}
 	}
 	public ArrayList<Integer> blocks;
-	public ArrayList<Integer> vals;
+	public ArrayList<ArrayList<Integer>> domains;    
 	public int operator;
 	public int tot;
 }
-
-
 
 class RegionComparator implements Comparator<Region> {
     public int compare(Region s1, Region s2)
