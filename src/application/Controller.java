@@ -217,6 +217,53 @@ public class Controller
 		//finally add the operation and the number
 	}
 	public void solve() {}
+	private void setDomain(ArrayList<Region> puzz) {
+		//Loop at each Region not completed
+		for(int i = 0;i<puzz.size();i++) {
+			//////////////////////////////////////////////////////////////
+			Region current = puzz.get(i);
+			if(current.blocks.size()==1)continue;
+			ArrayList<ArrayList<Integer>> domain = new ArrayList<>();
+			//Generate Domain Full Pattern for each cell
+			for(int j = 0;j<current.blocks.size();j++) {
+				domain.add(new ArrayList<Integer>());
+				for(int k = 1;k<=size;k++)domain.get(j).add(k);
+			}
+			//Reduce Domain Pattern for each cell
+			for(int j = 0;j<puzz.size();j++) {
+				if(puzz.get(j).blocks.size()!=1)continue;
+				int index = puzz.get(j).blocks.get(0)-1;
+				int value = (int)puzz.get(j).tot;
+				for(int k =0;k<current.blocks.size();k++) {
+					int myindex = current.blocks.get(k)-1;
+					if((int)index/size == (int)myindex/size)
+					{
+						if(domain.get(k).contains(value))
+							domain.get(k).remove(domain.get(k).indexOf(value));
+					}
+					else if((int)index%size == (int)myindex%size)
+					{
+						if(domain.get(k).contains(value))
+							domain.get(k).remove(domain.get(k).indexOf(value));
+					}
+				}
+			}
+			//All Possible Domains in region
+			int max = 1;
+			for(ArrayList<Integer> x : domain) max*=x.size();
+			current.domains = new ArrayList<>();
+			for(int j = 0;j<max;j++) {
+				int div = 1;
+				current.domains.add(new ArrayList<Integer>());
+				for(int k = 0;k<domain.size();k++) {
+					ArrayList<Integer> x = domain.get(k);
+					div*=x.size();
+					int num =x.get((j/(max/div))%x.size());
+					current.domains.get(j).add(num);
+				}
+			}
+		}
+	}
 	private int[][] primitive_soln(int n){
 		int[][] soln = new int[n][n];
 		for(int i=1; i <= n; i++) {
