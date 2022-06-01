@@ -262,6 +262,93 @@ public class Controller
 					current.domains.get(j).add(num);
 				}
 			}
+			//////////////////////////////////////////////////////////////
+			//Inner region constraints
+			for(int c=0;c<current.domains.size();c++) {
+				int bf = 0;
+				ArrayList<Integer> dom = current.domains.get(c);
+				for(int j=0;j<dom.size();j++) {
+					if(bf == 1)break;
+					int index = current.blocks.get(j);
+					int value = dom.get(j);
+					for(int k=j+1;k<dom.size();k++) {
+						int nindex = current.blocks.get(k);
+						int nvalue = dom.get(k);
+						if((index-1)/size == (nindex-1)/size && value==nvalue) {
+							current.domains.remove(c);
+							c--;
+							bf = 1;
+							break;
+						}
+						else if((index-1)%size == (nindex-1)%size && value==nvalue) {
+							current.domains.remove(c);
+							c--;
+							bf = 1;
+							break;
+						}
+					}
+				}
+			}
+			//////////////////////////////////////////////////////////////
+			//Operator in region constraints
+			double tot = 0;
+			switch(current.getOp()) {
+			case("+"):
+				for(int j=0;j<current.domains.size();j++) {
+					ArrayList<Integer> dom = current.domains.get(j);
+					tot = 0;
+					for(int k : dom) {
+						tot+=k;
+					}
+					if(tot !=current.tot) {
+						current.domains.remove(j);
+						j--;
+					}
+				}
+				break;
+			case("*"):
+				for(int j=0;j<current.domains.size();j++) {
+					ArrayList<Integer> dom = current.domains.get(j);
+					tot =1;
+					for(int k : dom) {
+						tot*=k;
+					}
+					if(tot !=current.tot) {
+						current.domains.remove(j);
+						j--;
+					}
+				}
+				break;
+			case("-"):
+				for(int j=0;j<current.domains.size();j++) {
+					ArrayList<Integer> dom = current.domains.get(j);
+					tot = 0;
+					for(int k : dom) {
+						if(tot==0)tot=k;
+						else tot-=k;
+					}
+					if(tot !=current.tot) {
+						current.domains.remove(j);
+						j--;
+					}
+				}
+				break;
+			case("/"):
+				for(int j=0;j<current.domains.size();j++) {
+					ArrayList<Integer> dom = current.domains.get(j);
+					tot = 0;
+					for(int k : dom) {
+						if(tot==0)tot=k;
+						else tot/=k;
+					}
+					if(tot !=current.tot) {
+						current.domains.remove(j);
+						j--;
+					}
+				}
+				break;
+			}
+			//////////////////////////////////////////////////////////////
 		}
 	}
 	private int[][] primitive_soln(int n){
