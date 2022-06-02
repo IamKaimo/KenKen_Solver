@@ -351,6 +351,21 @@ public class Controller
 			//////////////////////////////////////////////////////////////
 		}
 	}
+	private boolean validate(ArrayList<Region> puzz) {
+		for(int i = 0;i<puzz.size();i++) {
+			if(puzz.get(i).blocks.size()!=1)continue;
+			int index = puzz.get(i).blocks.get(0)-1;
+			int value = (int)puzz.get(i).tot;
+			for(int j =i+1;j<puzz.size();j++) {
+				if(puzz.get(j).blocks.size()!=1)continue;
+				int sindex = puzz.get(j).blocks.get(0)-1;
+				int svalue = (int)puzz.get(j).tot;
+				if((int)index/size == (int)sindex/size && value == svalue) return false;
+				else if(index%size == sindex%size && value == svalue) return false;
+			}
+		}
+		return true;
+	}
 	private int[][] primitive_soln(int n){
 		int[][] soln = new int[n][n];
 		for(int i=1; i <= n; i++) {
