@@ -351,6 +351,20 @@ public class Controller
 			//////////////////////////////////////////////////////////////
 		}
 	}
+	private void try_domain(ArrayList<Region> puzz,int reg_index,int dom_index) {
+		Region current = puzz.get(reg_index);
+		Region ret = new Region(current.blocks);
+		ret.domains = new ArrayList<>();
+		ret.domains.add(new ArrayList<Integer>());
+		ArrayList<Integer> vals = current.domains.get(dom_index);
+		for(int i = 0;i<vals.size();i++) {
+			ret.domains.get(0).add(vals.get(i));
+			Region New = new Region(current.blocks.get(i),vals.get(i));
+			puzz.add(New);
+		}
+		puzz.remove(reg_index);
+		puzz.sort(new RegionComparator());
+	}
 	private boolean validate(ArrayList<Region> puzz) {
 		for(int i = 0;i<puzz.size();i++) {
 			if(puzz.get(i).blocks.size()!=1)continue;
