@@ -2,6 +2,7 @@ package application;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -16,7 +17,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import java.util.Random;
 
-
 public class Controller
 {
 	@FXML
@@ -27,30 +27,144 @@ public class Controller
 	public Button solve_btn;
 	public ComboBox<String> algo_cb;
 	public VBox puzzle_box;
-	
+	public ListView<String> log;
+	public ArrayList<String> log_usr = new ArrayList<>();
+	public ArrayList<String> log_dev = new ArrayList<>();
+	public Button test_btn;
+	public ComboBox<Integer> cases_no;
+	public ComboBox<String> test_sizes;
+	public ToggleButton dev;
+	public Label iter_txt;
+
 	public void initialize() {
-		size_cb.getItems().addAll("2x2","3x3","4x4","5x5","6x6","7x7","8x8","9x9");
+		size_cb.getItems().addAll("3x3","4x4","5x5","6x6","7x7","8x8","9x9");
+		algo_cb.getItems().addAll("Backtracking");
+		cases_no.getItems().addAll(10,20,50,100);
+		test_sizes.getItems().addAll("Mix","3x3","4x4","5x5","6x6","7x7","8x8","9x9");
+		size_cb.setValue("3x3");
+		algo_cb.setValue("Backtracking");
+		cases_no.setValue(10);
+		test_sizes.setValue("Mix");
 		algo_txt.setDisable(true);
 		solve_btn.setDisable(true);
 		algo_cb.setDisable(true);
     }
 	public void generate_btn(ActionEvent e) {
 		size = size_cb.getValue().charAt(0) - 48;
-		generate();
 		algo_txt.setDisable(false);
 		solve_btn.setDisable(false);
 		algo_cb.setDisable(false);
+		solve_btn.setText("Solve");
+		generate();
+		draw(Puzzle);
+		setDomain(Puzzle);
 	}
-	public void draw_btn(ActionEvent e) {
-		puzzle_box.getChildren().clear();
-		draw();
+	public void solve_btn(ActionEvent e) {	
+		if(solve_btn.getText().equals("Solve")) {
+			solve_btn.setText("Unsolve");
+			algo_cb.setDisable(true);
+			long t1 = System.currentTimeMillis();
+			long t2;
+			switch(algo_cb.getValue()) {
+			case("Backtracking"):
+				Solu = solve_backtracking(Puzzle);
+				t2 = System.currentTimeMillis();
+				log_usr.add("Algorithm:		Backtracking");
+				log_usr.add("Size:				"+size_cb.getValue());
+				log_usr.add("Time Taken:		" + Long.toString(t2-t1) +"ms");
+				log_usr.add("Checks No.:		" + Integer.toString(checks));
+				log_usr.add("--------------------------------------------------------");
+				checks =0; 
+				break;
+			case("Backtracking (FC)"):
+				break;
+			case("Backtracking (AC)"):
+				break;
+			}
+			log.setItems(FXCollections.observableList(log_usr));
+			log.scrollTo(log.getItems().size()-1);
+			draw(Solu);
+		}
+		else {
+			solve_btn.setText("Solve");
+			algo_cb.setDisable(false);
+			draw(Puzzle);
+		}
+	}
+	public void test_btn(ActionEvent e) {
+		log_dev.add("---	Iterations:"+Integer.toString(cases_no.getValue())+"	---		Size:"+test_sizes.getValue()+"	---");
+		Random rand = new Random();
+		long t1,t2;
+		long c1=0;
+		long ti1= 0;
+		Solu = new ArrayList<>();
+		for(int i=0;i<cases_no.getValue();i++) {
+			if(test_sizes.getValue().charAt(0)=='M') size = rand.nextInt(7)+3;
+			else size = test_sizes.getValue().charAt(0) - 48;
+			generate();
+			setDomain(Puzzle);
+			t1 = System.currentTimeMillis();
+			solve_backtracking(Puzzle);
+			c1+=checks;
+			checks = 0;
+			t2 = System.currentTimeMillis();
+			ti1+=t2-t1;
+		}
+		log_dev.add("**First Algorithm:		Backtracking");
+		log_dev.add("Total Time Taken:		" + Long.toString(ti1) +"ms");
+		log_dev.add("Total Checks No.:		" + Long.toString(c1));
+		log_dev.add("--------------------------------------------------------");
+		log.setItems(FXCollections.observableList(log_dev));
+		log.scrollTo(log.getItems().size()-1);
+	}
+	public void dev_btn(ActionEvent e) {
+		if(dev.isSelected()) {
+			log.setItems(FXCollections.observableList(log_dev));
+			cases_no.setVisible(true);
+			test_sizes.setVisible(true);
+			test_btn.setVisible(true);
+			iter_txt.setVisible(true);
+
+			
+			size_cb.setVisible(false);
+			algo_cb.setVisible(false);
+			gene_btn.setVisible(false);
+			solve_btn.setVisible(false);
+			algo_txt.setVisible(false);
+			
+		}
+		else {
+			log.setItems(FXCollections.observableList(log_usr));
+			cases_no.setVisible(false);
+			test_sizes.setVisible(false);
+			test_btn.setVisible(false);
+			iter_txt.setVisible(false);
+			
+			size_cb.setVisible(true);
+			algo_cb.setVisible(true);
+			gene_btn.setVisible(true);
+			solve_btn.setVisible(true);
+			algo_txt.setVisible(true);
+		}
+	}
+	public void clr_btn(ActionEvent e) {
+		if(dev.isSelected()) {
+			log_dev.clear();
+			log.setItems(FXCollections.observableList(log_dev));
+		}
+		else {
+			log_usr.clear();
+			log.setItems(FXCollections.observableList(log_usr));
+		}
+		draw(null);
 	}
 	
 	//////////////////////Algorithm Code//////////////////////
 	public ArrayList<Region> Puzzle = new ArrayList<>();
 	public ArrayList<Region> Solu = new ArrayList<>();
 	public int size = 3;
-	
+	int checks = 0;
+
 	public void generate() {
 		//Step 0 :Clear and Create random object to get all random numbers from
 		Puzzle.clear();
@@ -139,7 +253,9 @@ public class Controller
 		for(Region Reg : Puzzle) Reg.setVals(soln);
 	    Puzzle.sort(new RegionComparator());
 	}	
-	public void draw() {
+	private void draw(ArrayList<Region> Puzzle) {
+		puzzle_box.getChildren().clear();
+		if(Puzzle==null)return;
 		double hb_w = puzzle_box.getPrefWidth();
 		double hb_h = puzzle_box.getPrefHeight()/size;
 		for(int i=0;i<size;i++) {
@@ -176,11 +292,12 @@ public class Controller
 				int row = (j-1)/size;
 				int column = (j-1)%size;
 				HBox Row =(HBox)puzzle_box.getChildren().get(row);
+				double cell_w = Row.getPrefWidth()/size;
+				double cell_h= Row.getPrefHeight();
 				BorderPane Cell = (BorderPane)Row.getChildren().get(column);
-				
 				if(flag==1) {
 					if(i.blocks.size()==1) {
-						Text txt = new Text(Integer.toString(i.tot));
+						Text txt = new Text(Integer.toString((int)i.tot));
 						txt.setFill(Color.BLUE);
 						txt.setStroke(Color.WHITE);
 						txt.setStrokeWidth(1);
@@ -190,7 +307,16 @@ public class Controller
 						BorderPane.setAlignment(Cell.getCenter(), Pos.CENTER);
 					}
 					else {
-						Text txt = new Text(Integer.toString(i.tot).concat("+"));
+						Text txt;
+						if(i.tot-(int)i.tot>0)	
+						{
+							String nu = Double.toString(i.tot);
+							if(nu.indexOf(".")+4<nu.length())nu=nu.substring(0, nu.indexOf(".")+4);
+							txt = new Text(nu.concat(i.getOp()));
+						}
+						else
+							txt = new Text(Integer.toString((int)i.tot).concat(i.getOp()));
+						
 						txt.setFill(Color.DEEPSKYBLUE);
 						txt.setStroke(Color.WHITE);
 						txt.setStrokeWidth(1);
@@ -201,22 +327,29 @@ public class Controller
 					}
 					flag = 0;
 				}
-				
 		    	//if not first row , if its already taken, if its already valid
-		    	if(j > size && i.blocks.contains(j - size)) Cell.setTop(null);
+		    	if(j > size && i.blocks.contains(j - size)) {
+		    		Cell.setTop(new Rectangle(0.9*cell_w,0.5*cell_h/50,Color.LIGHTGRAY));
+		    		BorderPane.setAlignment(Cell.getTop(), Pos.TOP_CENTER);
+		    	}
 		    	//if not last row
-		    	if(j <= size * size - size && i.blocks.contains(j + size)) Cell.setBottom(null);
+		    	if(j <= size * size - size && i.blocks.contains(j + size)) {
+		    		Cell.setBottom(new Rectangle(0.9*cell_w,0.5*cell_h/50,Color.LIGHTGRAY));
+					BorderPane.setAlignment(Cell.getBottom(), Pos.BOTTOM_CENTER);
+		    	}
 		    	//if not first column
-		    	if(j%size != 1 && i.blocks.contains(j- 1)) Cell.setLeft(null);
+		    	if(j%size != 1 && i.blocks.contains(j- 1)) {
+		    		Cell.setLeft(new Rectangle(0.5*cell_w/50,0.9*cell_h,Color.LIGHTGRAY));
+					BorderPane.setAlignment(Cell.getLeft(), Pos.CENTER_LEFT);
+		    	}
 		    	//if not last column
-		    	if(j%size != 0 && i.blocks.contains(j+ 1)) Cell.setRight(null);
+		    	if(j%size != 0 && i.blocks.contains(j+ 1)) {
+		    		Cell.setRight(new Rectangle(0.5*cell_w/50,0.9*cell_h,Color.LIGHTGRAY));
+					BorderPane.setAlignment(Cell.getRight(), Pos.CENTER_RIGHT);
+		    	}
 			}
 		}
-		//if region has one element put total it in center
-		//otherwise we put in center but top left align with small font
-		//finally add the operation and the number
 	}
-	public void solve() {}
 	private ArrayList<Region> solve_backtracking(ArrayList<Region> puzz) {
 		int reg_index = -1;
 		for(int i = 0;i<puzz.size();i++) {
@@ -228,6 +361,7 @@ public class Controller
 		}
 		if(reg_index == -1)return puzz;
 		for(int dom_index=0;dom_index<puzz.get(reg_index).domains.size();dom_index++) {
+			checks++;
 			//Copy The Array
 			ArrayList<Region> cpy = new ArrayList<Region>();
 			for(Region x:puzz) cpy.add(new Region(x));	
@@ -238,8 +372,7 @@ public class Controller
 			if(cpy !=null) return cpy;
 		}
 		return null;	
-	}
-	private void setDomain(ArrayList<Region> puzz) {
+	}	private void setDomain(ArrayList<Region> puzz) {
 		//Loop at each Region not completed
 		for(int i = 0;i<puzz.size();i++) {
 			//////////////////////////////////////////////////////////////
