@@ -217,6 +217,28 @@ public class Controller
 		//finally add the operation and the number
 	}
 	public void solve() {}
+	private ArrayList<Region> solve_backtracking(ArrayList<Region> puzz) {
+		int reg_index = -1;
+		for(int i = 0;i<puzz.size();i++) {
+			if(puzz.get(i).blocks.size()>1) {
+				if(reg_index == -1 || puzz.get(i).domains.size() < puzz.get(reg_index).domains.size()) {
+					reg_index = i;
+				}
+			}
+		}
+		if(reg_index == -1)return puzz;
+		for(int dom_index=0;dom_index<puzz.get(reg_index).domains.size();dom_index++) {
+			//Copy The Array
+			ArrayList<Region> cpy = new ArrayList<Region>();
+			for(Region x:puzz) cpy.add(new Region(x));	
+			
+			try_domain(cpy,reg_index,dom_index);
+			if(validate(cpy)==false) continue;
+			cpy = solve_backtracking(cpy);
+			if(cpy !=null) return cpy;
+		}
+		return null;	
+	}
 	private void setDomain(ArrayList<Region> puzz) {
 		//Loop at each Region not completed
 		for(int i = 0;i<puzz.size();i++) {
