@@ -38,7 +38,7 @@ public class Controller
 
 	public void initialize() {
 		size_cb.getItems().addAll("3x3","4x4","5x5","6x6","7x7","8x8","9x9");
-		algo_cb.getItems().addAll("Backtracking");
+		algo_cb.getItems().addAll("Backtracking","Backtracking (FC)");
 		cases_no.getItems().addAll(10,20,50,100);
 		test_sizes.getItems().addAll("Mix","3x3","4x4","5x5","6x6","7x7","8x8","9x9");
 		size_cb.setValue("3x3");
@@ -77,6 +77,14 @@ public class Controller
 				checks =0; 
 				break;
 			case("Backtracking (FC)"):
+				Solu = solve_backforward(Puzzle);
+				t2 = System.currentTimeMillis();
+				log_usr.add("Algorithm:		Backtracking(FC)");
+				log_usr.add("Size:				"+size_cb.getValue());
+				log_usr.add("Time Taken:		" + Long.toString(t2-t1) +"ms");
+				log_usr.add("Checks No.:		" + Integer.toString(checks));
+				log_usr.add("--------------------------------------------------------");
+				checks =0; 
 				break;
 			case("Backtracking (AC)"):
 				break;
@@ -94,9 +102,10 @@ public class Controller
 	public void test_btn(ActionEvent e) {
 		log_dev.add("---	Iterations:"+Integer.toString(cases_no.getValue())+"	---		Size:"+test_sizes.getValue()+"	---");
 		Random rand = new Random();
-		long t1,t2;
-		long c1=0;
-		long ti1= 0;
+		long t1,t2,t3;
+		long c1=0,c2=0;
+		long ti1= 0,ti2=0;
+
 		Solu = new ArrayList<>();
 		for(int i=0;i<cases_no.getValue();i++) {
 			if(test_sizes.getValue().charAt(0)=='M') size = rand.nextInt(7)+3;
@@ -108,11 +117,20 @@ public class Controller
 			c1+=checks;
 			checks = 0;
 			t2 = System.currentTimeMillis();
+			solve_backforward(Puzzle);
+			c2+=checks;
+			checks = 0;
+			t3 = System.currentTimeMillis();
 			ti1+=t2-t1;
+			ti2+=t3-t2;
 		}
 		log_dev.add("**First Algorithm:		Backtracking");
 		log_dev.add("Total Time Taken:		" + Long.toString(ti1) +"ms");
 		log_dev.add("Total Checks No.:		" + Long.toString(c1));
+		log_dev.add("**Second Algorithm:	Backtracking(FC)");
+		log_dev.add("Total Time Taken:		" + Long.toString(ti2) +"ms");
+		log_dev.add("Total Checks No.:		" + Long.toString(c2));
+		log_dev.add("**Third Algorithm:		Backtracking(AC)");
 		log_dev.add("--------------------------------------------------------");
 		log.setItems(FXCollections.observableList(log_dev));
 		log.scrollTo(log.getItems().size()-1);
@@ -529,7 +547,6 @@ public class Controller
 		}
 		return null;	
 	}
-
 	private Region try_domain(ArrayList<Region> puzz,int reg_index,int dom_index) {
 		Region current = puzz.get(reg_index);
 		Region ret = new Region(current.blocks);
