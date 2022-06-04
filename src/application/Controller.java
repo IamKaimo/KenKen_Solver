@@ -506,7 +506,31 @@ public class Controller
 			//////////////////////////////////////////////////////////////
 		}
 	}
-	private void try_domain(ArrayList<Region> puzz,int reg_index,int dom_index) {
+	private ArrayList<Region> solve_backforward(ArrayList<Region> puzz) {
+		int reg_index = -1;
+		for(int i = 0;i<puzz.size();i++) {
+			if(puzz.get(i).blocks.size()>1) {
+				if(reg_index == -1 || puzz.get(i).domains.size() < puzz.get(reg_index).domains.size()) {
+					reg_index = i;
+				}
+			}
+		}
+		if(reg_index == -1)return puzz;
+		for(int dom_index=0;dom_index<puzz.get(reg_index).domains.size();dom_index++) {
+			//Copy The Array
+			ArrayList<Region> cpy = new ArrayList<Region>();
+			for(Region x:puzz) cpy.add(new Region(x));
+	
+			Region ret = try_domain(cpy,reg_index,dom_index);
+			if(validate(cpy)==false) continue;
+			if(!forwardChecking(cpy,ret))continue;
+			cpy = solve_backtracking(cpy);
+			if(cpy !=null) return cpy;
+		}
+		return null;	
+	}
+
+	private Region try_domain(ArrayList<Region> puzz,int reg_index,int dom_index) {
 		Region current = puzz.get(reg_index);
 		Region ret = new Region(current.blocks);
 		ret.domains = new ArrayList<>();
@@ -519,7 +543,8 @@ public class Controller
 		}
 		puzz.remove(reg_index);
 		puzz.sort(new RegionComparator());
-	}
+		return ret;
+	}	
 	private boolean validate(ArrayList<Region> puzz) {
 		for(int i = 0;i<puzz.size();i++) {
 			if(puzz.get(i).blocks.size()!=1)continue;
@@ -531,6 +556,29 @@ public class Controller
 				int svalue = (int)puzz.get(j).tot;
 				if((int)index/size == (int)sindex/size && value == svalue) return false;
 				else if(index%size == sindex%size && value == svalue) return false;
+			}
+		}
+		return true;
+	}
+	private boolean forwardChecking(ArrayList<Region> puz,Region ret) {
+		for(int i = 0;i<ret.blocks.size();i++) {
+			int index = ret.blocks.get(i)-1;
+			int value = (int)ret.domains.get(0).get(i);
+			for(int j = 0;j<puz.size();j++) {
+				Region next = puz.get(j);
+				if(next.blocks.size()==1)continue;
+				for(int k = 0;k<next.blocks.size();k++) {
+					if((next.blocks.get(k)-1)%size == index%size || (int)(next.blocks.get(k)-1)/size == (int)index/size) {
+						for(int c = 0;c<next.domains.size();c++){
+							ArrayList<Integer> dom = next.domains.get(c);
+							if(dom.get(k)==value) {
+								next.domains.remove(c);
+								c--;
+							}
+						}
+					}
+				}
+				if(next.domains.isEmpty())return false;
 			}
 		}
 		return true;
