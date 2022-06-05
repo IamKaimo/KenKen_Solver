@@ -577,6 +577,29 @@ public class Controller
 		}
 		return true;
 	}
+	private boolean ArcConsistency(ArrayList<Region> puz) {
+		int skip = -1;
+		for(int reg_index=0;reg_index<puz.size();reg_index++) {
+			int cpy_reg_index = reg_index;
+			Region current = puz.get(reg_index);
+			if(current.blocks.size()==1 || reg_index == skip)continue;
+			for(int dom_index = 0;dom_index<current.domains.size();dom_index++) {
+				//Copy The Array
+				ArrayList<Region> cpy = new ArrayList<Region>();
+				for(Region x:puz) cpy.add(new Region(x));
+				
+				Region ret = try_domain(cpy,cpy_reg_index,dom_index);
+				if(forwardChecking(cpy,ret)==false) {
+					current.domains.remove(dom_index);
+					dom_index--;
+					skip = reg_index;
+					reg_index = -1;
+				}
+				if(current.domains.size()==0)return false;
+			}
+		}
+		return true;
+	}
 	private boolean forwardChecking(ArrayList<Region> puz,Region ret) {
 		for(int i = 0;i<ret.blocks.size();i++) {
 			int index = ret.blocks.get(i)-1;
@@ -599,6 +622,30 @@ public class Controller
 			}
 		}
 		return true;
+	}
+	private ArrayList<Region> solve_backarc(ArrayList<Region> puzz) {
+		if(!ArcConsistency(puzz))return null;
+		int reg_index = -1;
+		for(int i = 0;i<puzz.size();i++) {
+			if(puzz.get(i).blocks.size()>1) {
+				if(reg_index == -1 || puzz.get(i).domains.size() < puzz.get(reg_index).domains.size()) {
+					reg_index = i;
+				}
+			}
+		}
+		if(reg_index == -1)return puzz;
+		for(int dom_index=0;dom_index<puzz.get(reg_index).domains.size();dom_index++) {
+			checks++;
+			//Copy The Array
+			ArrayList<Region> cpy = new ArrayList<Region>();
+			for(Region x:puzz) cpy.add(new Region(x));	
+			
+			try_domain(cpy,reg_index,dom_index);
+			if(validate(cpy)==false) continue;
+			cpy = solve_backtracking(cpy);
+			if(cpy !=null) return cpy;
+		}
+		return null;
 	}
 	private int[][] primitive_soln(int n){
 		int[][] soln = new int[n][n];
