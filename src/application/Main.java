@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 
 
 public class Main extends Application {
@@ -17,12 +18,10 @@ public class Main extends Application {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
-			primaryStage.setTitle("KENKEN Puzzle Solver");
-			//Image icon = new Image("icon.png");
-			//primaryStage.getIcons().add(icon);
+			primaryStage.setTitle("KENKEN Puzzle");
+			Image icon = new Image("/icon.png");
+			primaryStage.getIcons().add(icon);
 			primaryStage.setResizable(false);
-			primaryStage.setMinWidth(800);
-			primaryStage.setMinHeight(600);	
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {

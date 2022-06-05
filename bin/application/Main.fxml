@@ -3,35 +3,74 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
       <HBox minHeight="-Infinity" minWidth="-Infinity">
          <children>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" HBox.hgrow="ALWAYS">
+            <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="250.0" HBox.hgrow="ALWAYS">
                <children>
-                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="200.0" style="-fx-background-color: rgb(220,230,230);">
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="250.0" style="-fx-background-color: rgb(215,225,225);">
                      <children>
-                        <Text fill="#11b0cc" layoutX="16.0" layoutY="40.0" stroke="#bf3333" strokeType="OUTSIDE" strokeWidth="0.0" text="KenKen Solver" wrappingWidth="167.20000000000005">
+                        <Text fill="#0cc7e4" layoutX="41.0" layoutY="40.0" stroke="#bf3333" strokeType="OUTSIDE" strokeWidth="0.0" text="KenKen Solver" wrappingWidth="167.20000000000005">
                            <font>
                               <Font name="Book Antiqua" size="24.0" />
                            </font>
                         </Text>
+                        <ToggleButton fx:id="dev" layoutX="219.0" layoutY="44.0" mnemonicParsing="false" onAction="#dev_btn" prefHeight="18.0" prefWidth="34.0" text="Dev" textAlignment="CENTER" textFill="#029c09">
+                           <font>
+                              <Font name="Calibri Bold Italic" size="11.0" />
+                           </font>
+                           <effect>
+                              <Glow />
+                           </effect>
+                        </ToggleButton>
                      </children>
                   </AnchorPane>
-                  <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="ALWAYS">
+                  <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="250.0">
                      <children>
-                        <Button fx:id="gene_btn" layoutX="16.0" layoutY="62.0" mnemonicParsing="false" onAction="#generate_btn" prefHeight="26.0" prefWidth="167.0" text="Generate" />
-                        <Button fx:id="solve_btn" layoutX="16.0" layoutY="171.0" mnemonicParsing="false" onAction="#draw_btn" prefHeight="26.0" prefWidth="167.0" text="Solve" />
-                        <ComboBox fx:id="size_cb" layoutX="92.0" layoutY="28.0" prefHeight="26.0" prefWidth="92.0" promptText="N x N" />
-                        <Label fx:id="size_txt" layoutX="16.0" layoutY="33.0" text="Size :" />
-                        <Label fx:id="algo_txt" layoutX="16.0" layoutY="142.0" text="Algorithm :" />
-                        <ComboBox fx:id="algo_cb" layoutX="92.0" layoutY="137.0" prefHeight="26.0" prefWidth="92.0" promptText="Choose " />
+                        <Button fx:id="gene_btn" layoutX="21.0" layoutY="62.0" mnemonicParsing="false" onAction="#generate_btn" prefHeight="26.0" prefWidth="207.0" text="Generate" />
+                        <Button fx:id="solve_btn" layoutX="21.0" layoutY="163.0" mnemonicParsing="false" onAction="#solve_btn" prefHeight="26.0" prefWidth="207.0" text="Solve" />
+                        <ComboBox fx:id="size_cb" layoutX="92.0" layoutY="27.0" prefHeight="26.0" prefWidth="65.0" />
+                        <Label fx:id="size_txt" layoutX="25.0" layoutY="32.0" text="Size :" />
+                        <Label fx:id="algo_txt" layoutX="23.0" layoutY="133.0" text="Algorithm :" />
+                        <ComboBox fx:id="algo_cb" layoutX="92.0" layoutY="129.0" prefHeight="26.0" prefWidth="135.0" />
+                        <Button fx:id="test_btn" layoutX="21.0" layoutY="128.0" mnemonicParsing="false" onAction="#test_btn" prefHeight="26.0" prefWidth="207.0" text="TEST" textFill="RED" visible="false" />
+                        <ComboBox fx:id="test_sizes" layoutX="92.0" layoutY="27.0" prefHeight="26.0" prefWidth="65.0" visible="false" />
+                        <ComboBox fx:id="cases_no" layoutX="92.0" layoutY="62.0" prefHeight="26.0" prefWidth="135.0" visible="false" />
+                        <Label fx:id="iter_txt" layoutX="25.0" layoutY="66.0" text="Iterations :" visible="false" />
+                        <ComboBox fx:id="op_cb" layoutX="158.0" layoutY="27.0" prefHeight="26.0" prefWidth="71.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="250.0" style="-fx-background-color: rgb(220,220,220);">
+                     <children>
+                        <Text layoutX="41.0" layoutY="20.0" smooth="false" stroke="WHITE" strokeType="OUTSIDE" strokeWidth="2.0" text="Performance Analysis" textAlignment="CENTER" wrappingWidth="167.20000000000005">
+                           <font>
+                              <Font name="Candara" size="18.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="280.0" prefWidth="250.0" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ListView fx:id="log" layoutY="-2.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="285.0" prefWidth="250.0" />
+                        <Button layoutX="-3.0" layoutY="270.0" mnemonicParsing="false" onAction="#clr_btn" prefHeight="18.0" prefWidth="34.0" text="CLR" textFill="#00517d">
+                           <font>
+                              <Font name="Calibri Bold" size="10.0" />
+                           </font>
+                           <effect>
+                              <InnerShadow height="10.0" radius="4.5" width="10.0" />
+                           </effect>
+                        </Button>
                      </children>
                   </AnchorPane>
                </children>
